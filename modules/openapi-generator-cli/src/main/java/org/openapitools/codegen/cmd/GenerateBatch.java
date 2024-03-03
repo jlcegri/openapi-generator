@@ -104,7 +104,7 @@ public class GenerateBatch extends OpenApiGeneratorCommand {
      */
     @Override
     public void execute() {
-        if (configs.size() < 1) {
+        if (configs.isEmpty()) {
             LOGGER.error("No configuration file inputs specified");
             System.exit(1);
         }
@@ -137,7 +137,7 @@ public class GenerateBatch extends OpenApiGeneratorCommand {
             }
         }
 
-        LOGGER.info(String.format(Locale.ROOT, "Batch generation using up to %d threads.\nIncludes: %s\nRoot: %s", numThreads, includesDir.getAbsolutePath(), rootDir.toAbsolutePath().toString()));
+        LOGGER.info(String.format(Locale.ROOT, "Batch generation using up to %d threads.%nIncludes: %s%nRoot: %s", numThreads, includesDir.getAbsolutePath(), rootDir.toAbsolutePath().toString()));
 
         // Create a module which loads our config files, but supports a special "!include" key which can point to an existing config file.
         // This allows us to create a sort of meta-config which holds configs which are otherwise required at CLI time (via generate task).
@@ -233,7 +233,7 @@ public class GenerateBatch extends OpenApiGeneratorCommand {
 
                 System.out.printf(Locale.ROOT, "[%s] Finished generating %s…%n", Thread.currentThread().getName(), name);
                 successes.incrementAndGet();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 failures.incrementAndGet();
                 String failedOn = name;
                 if (StringUtils.isEmpty(failedOn)) {
@@ -260,7 +260,7 @@ public class GenerateBatch extends OpenApiGeneratorCommand {
                         if (file.toString().startsWith(outDir.toAbsolutePath().toString())) {
                             try {
                                 Files.delete(file);
-                            } catch (Throwable e) {
+                            } catch (Exception e) {
                                 System.out.printf(Locale.ROOT, "[%s] Generator %s failed to clean file %s…%n", Thread.currentThread().getName(), name, file);
                             }
                         }
